@@ -20,12 +20,22 @@ A free Netflix-style movie streaming app powered by:
 3. Go to **API Keys → Create Key**
 4. Copy your key
 
+
 ### Step 3 — Add your keys
 Open `js/config.js` and replace:
 ```js
 TMDB_API_KEY: "YOUR_TMDB_API_KEY_HERE",
+// For local dev only:
 ANTHROPIC_API_KEY: "YOUR_ANTHROPIC_API_KEY_HERE",
 ```
+
+**For Vercel deployment:**
+- Go to your project in the Vercel dashboard
+- Add an environment variable: `ANTHROPIC_API_KEY` with your key (no need to edit config.js)
+
+**Note:**
+- TMDB is 100% free and unlimited for non-commercial use
+- Anthropic Claude is free for a limited trial only (remove or ignore if you want a 100% free app)
 
 ### Step 4 — Push to GitHub
 ```bash
