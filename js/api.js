@@ -44,20 +44,13 @@ async function discoverByGenre(genreId) {
 // ---------- Anthropic Claude ----------
 
 async function askClaude(userMessage) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch("/api/ask-claude", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": CONFIG.ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system:
-        "You are CinemAI, an expert movie recommendation assistant. You give enthusiastic, concise movie recommendations. Always mention 3-5 specific movies with a short reason for each. Format your response cleanly with movie titles in bold using **Title** syntax. Keep it under 200 words.",
-      messages: [{ role: "user", content: userMessage }],
+      userMessage: userMessage,
     }),
   });
   if (!res.ok) {
