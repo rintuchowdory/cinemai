@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CinemAI — Your Infinite Watchlist</title>
+  <meta name="description" content="Watch free movies and TV shows with AI-powered recommendations." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="logo">CinemAI<span>Your Infinite Watchlist</span></div>
+  <ul class="nav-links">
+    <li><a class="active" data-section="home">Home</a></li>
+    <li><a data-section="movies">Movies</a></li>
+    <li><a data-section="tv">TV Shows</a></li>
+    <li><a data-section="trending">Trending</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search movies, shows..." />
+      <button class="search-btn" onclick="doSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content" id="heroContent">
+    <div class="hero-badge">⭐ AI Pick of the Day</div>
+    <h1 class="hero-title" id="heroTitle">Loading...</h1>
+    <div class="hero-meta" id="heroMeta"></div>
+    <p class="hero-desc" id="heroDesc"></p>
+    <div class="hero-actions">
+      <button class="btn-play" id="heroPlayBtn">▶ Watch Free</button>
+      <button class="btn-ghost" id="heroInfoBtn">ℹ More Info</button>
+    </div>
+  </div>
+</section>
+
+<!-- AI ASK STRIP -->
+<div class="ai-strip">
+  <div class="ai-strip-header">
+    <span class="ai-dot"></span>
+    <strong>Ask CinemAI</strong>
+    <span class="ai-sub">Your personal movie advisor</span>
+  </div>
+  <div class="ai-input-row">
+    <input type="text" id="aiInput" class="ai-input" placeholder="e.g. Something like Inception but more emotional..." />
+    <button class="ai-send-btn" onclick="askAI()">Ask AI ↗</button>
+  </div>
+  <div id="aiResponse" class="ai-response hidden"></div>
+  <div class="ai-prompts">
+    <button class="ai-prompt" onclick="setAIPrompt('Best free horror movies to watch tonight')">👻 Horror tonight</button>
+    <button class="ai-prompt" onclick="setAIPrompt('I have 90 minutes — recommend a mindblowing short film')">⚡ 90-min pick</button>
+    <button class="ai-prompt" onclick="setAIPrompt('Build me a movie marathon list for the weekend mixing genres')">🍿 Weekend marathon</button>
+    <button class="ai-prompt" onclick="setAIPrompt('Best family movies for kids under 10 that adults also enjoy')">👨‍👩‍👧 Family night</button>
+    <button class="ai-prompt" onclick="setAIPrompt('Top rated documentaries of all time')">📽️ Top documentaries</button>
+  </div>
+</div>
+
+<!-- GENRE PILLS -->
+<div class="genre-pills" id="genrePills">
+  <button class="pill active" onclick="filterGenre(this,'')">All</button>
+  <button class="pill" onclick="filterGenre(this,'28')">Action</button>
+  <button class="pill" onclick="filterGenre(this,'18')">Drama</button>
+  <button class="pill" onclick="filterGenre(this,'878')">Sci-Fi</button>
+  <button class="pill" onclick="filterGenre(this,'35')">Comedy</button>
+  <button class="pill" onclick="filterGenre(this,'53')">Thriller</button>
+  <button class="pill" onclick="filterGenre(this,'27')">Horror</button>
+  <button class="pill" onclick="filterGenre(this,'10749')">Romance</button>
+  <button class="pill" onclick="filterGenre(this,'16')">Animation</button>
+  <button class="pill" onclick="filterGenre(this,'99')">Documentary</button>
+</div>
+
+<!-- TRENDING -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">🔥 Trending Now</h2>
+  </div>
+  <div class="movies-grid" id="trendingGrid"></div>
+</section>
+
+<!-- TOP RATED -->
+<section class="section">
+  <div class="section-header">
+    <h2 class="section-title">⭐ Top Rated</h2>
+  </div>
+  <div class="movies-grid" id="topRatedGrid"></div>
+</section>
+
+<!-- SEARCH RESULTS (hidden by default) -->
+<section class="section hidden" id="searchSection">
+  <div class="section-header">
+    <h2 class="section-title" id="searchTitle">Search Results</h2>
+  </div>
+  <div class="movies-grid" id="searchGrid"></div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-backdrop hidden" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-player" id="modalPlayer">
+      <div class="player-placeholder" id="playerPlaceholder">
+        <img id="modalBackdrop" src="" alt="" style="width:100%;height:100%;object-fit:cover;opacity:0.5" />
+        <button class="play-big" onclick="startStream()">▶</button>
+      </div>
+      <iframe id="streamFrame" class="hidden" allowfullscreen allow="autoplay; fullscreen"></iframe>
+    </div>
+    <div class="modal-info">
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-meta" id="modalMeta"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-actions">
+        <button class="btn-play" onclick="startStream()">▶ Play Free</button>
+        <button class="btn-ghost" onclick="fetchSimilar()">Similar Movies</button>
+      </div>
+      <div id="similarMovies" class="similar-row hidden"></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">CinemAI</div>
+  <p class="footer-copy">Powered by TMDB · Streaming via VidSrc · AI by Claude</p>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
